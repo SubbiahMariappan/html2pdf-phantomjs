@@ -8,11 +8,16 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+console.log("=====App INITIALISED======")
+
 app.get('/', (req, res) => {
+    console.log("=====INSIDE GET METHOD======")
+
     res.send('Service running');
 });
 
 app.post('/', (req, res) => {
+    console.log("=====INSIDE PDF POST METHOD======")
 
     // var pdf contains the promise, when resolved true if success, false if otherwise
     var pdf = phantom.render(req.body);
@@ -24,4 +29,5 @@ app.post('/', (req, res) => {
 
 });
 
-app.listen(PORT, () => console.log(`Server listening on port: ${PORT}`));
+module.exports = app;
+

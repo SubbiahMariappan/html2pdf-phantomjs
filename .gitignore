@@ -142,3 +142,10 @@ dist
 .svelte-kit
 
 # End of https://www.toptal.com/developers/gitignore/api/node
+
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
