@@ -25,35 +25,25 @@ app.post('/', (req, res) => {
     var pdf = phantom.render(req.body);
     const file = `${__dirname}/test.pdf`;
 
-    setTimeout(function(){
+    setTimeout(function () {
         res.download(file)
-    },5000);
+    }, 5000);
 
 });
 
-app.post('/v2', (req, res) => {
+app.post('/v2', async (req, res) => {
     console.log("=====INSIDE v2 PDF POST METHOD======")
-    phantom.render2(req.body);
-    const file = `${__dirname}/testo.pdf`;
-
+    var result = await phantom.render2(req.body)
+    console.log(result)
+    const file = `/tmp/testo.pdf`;
     console.log('dirname testo', file)
+    if (!file) {
+        res.status(500).send('This has failed :c ')
+    } else {
+        console.log("downloading")
+        res.status(200).download(file)
+    }
 
-    setTimeout(function(){
-        execFile('ls', ['-la'], (err, stdout, stderr) => {
-        console.log('checking files in here')
-        console.log(stdout)
-        console.log(stderr)
-      })
-    },4000);
-
-    setTimeout(function(){
-        if (!file){
-            res.status(500).send('This has failed :c ')
-        }else {
-            res.status(200).download(file)
-        }
-    },5000);
-    
 });
 
 module.exports = app;

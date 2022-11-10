@@ -1,8 +1,9 @@
 const phantom = require('phantom');
+const util = require('util');
 
 const fs = require('fs')
 const path = require('path')
-const execFile = require('child_process').execFile
+const execFile = util.promisify(require('child_process').execFile);
 
 async function render(body){
     console.log('rendering');
@@ -27,28 +28,32 @@ async function render(body){
     return pdf;
 };
 
-function render2(body){
-
-    console.log(body)
+async function render2(body){
     const phantomjs = path.resolve('bin/phantomjs-linux')
     // rasterize file responsible for executing phantomjs code
     const rasterize = path.resolve('lib/rasterize.js')
-    const outputPDF = 'testo.pdf'
-    
+    const outputPDF = '/tmp/testo.pdf'
+    console.log('inside render2')
     //simple test body
-    const mbody = "<html><body>GodZalo</body></html>"
+    const mbody = "<html><body>GodZalo</body></html>";
 
-    execFile(phantomjs, [rasterize, mbody, outputPDF], (err, stdout, stderr) => {
-        console.log('execute phantomjs')
-        console.log(stdout)
-        console.log(stderr)
-        
-        if (err){
-            console.log(err)
-        }else {
-            console.log('You did it')
-        }
-      })
+
+     const promise = execFile(phantomjs, [rasterize, body.body, outputPDF]);
+     const child = promise.child;
+     child.on('error',(err) => {
+        console.log(err)
+     })
+     child.on('close',(resp) => {
+            console.log('execute phantomjs')
+            console.log(`output ${resp}`)
+            const output = fs.readFileSync(outputPDF) 
+            output.toString('base64');
+            console.log(output.toString('base64'))
+          }
+     );
+     const {pdfBinary } = await promise;
+     console.log(`return ${pdfBinary}`);
+     return pdfBinary;
 }
 
 module.exports = {
