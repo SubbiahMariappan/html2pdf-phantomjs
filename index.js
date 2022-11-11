@@ -41,7 +41,11 @@ app.post('/v2', async (req, res) => {
         res.status(500).send('This has failed :c ')
     } else {
         console.log("downloading")
-        res.status(200).download(file)
+        res.status(200).sendFile(file,{
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'inline; filename="testo.pdf"'
+        })
     }
 
 });
