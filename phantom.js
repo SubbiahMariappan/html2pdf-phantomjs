@@ -36,16 +36,13 @@ async function render2(body){
     console.log('inside render2')
     //simple test body
     const mbody = "<html><body>GodZalo</body></html>";
-
-
+    console.log('execute phantomjs')
      const promise = execFile(phantomjs, [rasterize, body.body, outputPDF]);
      const child = promise.child;
      child.on('error',(err) => {
         console.log(err)
      })
      child.on('close',(resp) => {
-            console.log('execute phantomjs')
-            console.log(`output ${resp}`)
             const output = fs.readFileSync(outputPDF) 
             output.toString('base64');
             console.log(output.toString('base64'))

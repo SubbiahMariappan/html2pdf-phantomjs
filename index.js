@@ -1,11 +1,9 @@
 var express = require('express');
 var phantom = require('./phantom.js');
 const bodyParser = require('body-parser')
+const path = require('path');
+const fs = require('fs');
 var app = express();
-
-//test, delete later
-const execFile = require('child_process').execFile
-
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,14 +38,16 @@ app.post('/v2', async (req, res) => {
     if (!file) {
         res.status(500).send('This has failed :c ')
     } else {
-        console.log("downloading")
-        res.status(200).sendFile(file,{
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': 'inline; filename="testo.pdf"'
-        })
+        console.log("downloading from path")
+        res.download(path.resolve(file));
     }
 
+});
+
+app.get('/donwlaod', (req, res) => {
+    console.log("=====INSIDE DOWNLOAD PDF======")
+    const file = `${__dirname}/tmp/download.pdf`;
+    res.download(path.resolve(file));
 });
 
 module.exports = app;
